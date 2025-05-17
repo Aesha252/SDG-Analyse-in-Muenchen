@@ -1,6 +1,6 @@
 # SDG-Analyse in München
 
-Dieses Repository enthält eine Analyse der Sustainable Development Goals (SDGs) der UN im Kontext der Stadt München, erstellt im Rahmen der Modularbeit "Datenaufbereitung und Visualisierung" an der Hochschule München.
+Dieses Repository enthält eine Analyse der Sustainable Development Goals (SDGs) der UN im Kontext der Stadt München, erstellt im Rahmen der Modularbeit "Datenaufbereitung und Visualisierung" an der Hochschule im Sommersemester 2024.
 
 ## Repository klonen
 
