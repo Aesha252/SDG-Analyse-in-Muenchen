@@ -24,11 +24,11 @@ cd SDG-Analyse-in-Muenchen
 2. **R Markdown ausführen:**
    ```r
    # Benötigte Pakete installieren
-   source("DataVizMAinstall.R")
+   source("install.R")
    
    # Mit RStudio die .Rmd-Datei öffnen und ausführen
    # oder über die Kommandozeile:
-   rmarkdown::render("DataVizMA.Rmd")
+   rmarkdown::render("SDG-Analyse-in-Muenchen-Aesha-Verma.Rmd")
    ```
 
 ## Aufgabenstellung
@@ -53,6 +53,3 @@ Der Report bearbeitet folgende Aufgaben:
 
 Die für die Analyse verwendeten Datensätze befinden sich im `data/`-Ordner und stammen hauptsächlich vom Open Data Portal der Stadt München.
 
-## Kontakt
-
-Bei Fragen zum Repository oder zur Analyse können Sie einen Issue im Repository erstellen oder direkt über GitHub Kontakt aufnehmen.
