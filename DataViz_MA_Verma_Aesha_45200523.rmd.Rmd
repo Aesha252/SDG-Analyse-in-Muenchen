@@ -1,0 +1,315 @@
+---
+title: "Project Datenvisualisierung"
+author: "Aesha Verma"
+date: "2024-06-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r install, echo=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+options(repos = c(CRAN = "https://cran.r-project.org"))
+
+#install.packages("readxl")
+library(readxl)
+
+#install.packages("dplyr")
+library(dplyr)
+
+#install.packages("styler")
+
+#install.packages("plotly")
+library(plotly)
+library(tidyverse)
+library(ggplot2)
+```
+
+## SDG 3: 
+SDG 3, auch bekannt als Ziel für **S**ustainable **D**evelopment **G**oal 3, konzentriert sich auf die Gewährleistung eines gesunden Lebens und die Förderung des Wohlbefindens für alle Menschen jeden Alters. Dieses Ziel umfasst ein breites Spektrum gesundheitsbezogener Themen, darunter die Verringerung der Müttersterblichkeit, die Beendigung vermeidbarer Todesfälle von Neugeborenen und Kindern unter fünf Jahren, die Bekämpfung übertragbarer Krankheiten und die Verwirklichung einer allgemeinen Gesundheitsversorgung.
+
+
+## Arbeitshypothese
+
+München, als Teil Deutschlands, verfolgt ein umfassendes Gesundheitssystem, das wesentlich dazu beiträgt, eine allgemeine Gesundheitsversorgung zu erreichen und den Zugang zu hochwertigen grundlegenden Gesundheitsdiensten, finanziellem Risikoschutz sowie erschwinglichen Medikamenten und Impfstoffen für alle Einwohner zu gewährleisten.
+
+## das allgemeine Gesundheitssystem in  Deutschland
+1.Zugang zu hochwertigen grundlegenden Gesundheitsdiensten: 
+Deutschland und damit auch München verfügen über ein gut ausgebautes, allen Bürgern zugängliches Gesundheitssystem mit einem breiten Angebot an medizinischen Leistungen über die gesetzliche Krankenversicherung (GKV) und einer großen Anzahl an Fachärzten und Krankenhäusern.
+
+### Hintergrundinformationen
+Die Hypothese, dass München als Teil Deutschlands ein umfassendes Gesundheitssystem verfolgt, das eine allgemeine Gesundheitsversorgung fördert, lässt sich anhand des Ziels für nachhaltige Entwicklung (Sustainable Development Goal, SDG) 3 der Vereinten Nationen (UN) untermauern. SDG 3 zielt darauf ab, ein gesundes Leben für alle Menschen jeden Alters zu gewährleisten und ihr Wohlergehen zu fördern. Die wichtigsten Unterziele von SDG 3, die sich auf die allgemeine Gesundheitsversorgung beziehen, beinhalten den Zugang zu hochwertigen grundlegenden Gesundheitsdiensten, finanziellem Risikoschutz und erschwinglichen Medikamenten und Impfstoffen. Hier sind einige spezifische Punkte, die diese Hypothese unterstützen:
+
+### 1. Zugang zu hochwertigen grundlegenden Gesundheitsdiensten
+Deutschland, einschließlich München, verfügt über ein gut entwickeltes Gesundheitssystem, das allen Bürgern zur Verfügung steht. Die gesetzliche Krankenversicherung (GKV) deckt eine breite Palette an medizinischen Leistungen ab, darunter Vorsorgeuntersuchungen, Behandlungen und Rehabilitation.
+
+### 2. Finanziellem Risikoschutz
+Es gibt in Deutschland eine generelle Verpflichtung zur Krankenversicherung. Das heißt, dass jeder, der in Deutschland lebt, zur Krankenversicherung verpflichtet ist. Diese Verpflichtung gilt für die private und die gesetzliche Krankenversicherung. diese steht in Sozialgesetzbuch Fünftes Buch (SGB V) fest : § 5 SGB V - Versicherungspflicht.
+§ 5 SGB V legt fest, wer in der gesetzlichen Krankenversicherung pflichtversichert ist. Dazu zählen unter anderem Arbeitnehmer, Auszubildende, Rentner, Studenten und Arbeitslose.
+
+### 3. Erschwingliche Medikamente und Impfstoffe
+Um die Sicherheit zu gewährleisten, gibt es in Deutschland ein strenges Preissystem für Medikamente und Impfstoffe. Die Preise für verschreibungspflichtige Medikamente werden durch vorab zu verhandelnde Regulierungen kontrolliert und im wesentlichen reduziert. Impfstoffe sind daher für die Bevölkerung in der Regel kostenlos oder sehr günstig.
+
+
+Weiterhin wird die Entwickelung/Ausbreitung und Verteilung der medizinischen Versorgung bzw. Gesundheitsleister in München gezeigt. 
+
+## Daten Wahl und dessen Begründung:
+datensatz: krankenversicherte: <https://www.bpb.de/system/files/datei/SOZ_10_04_Krankenversicherungsschutz.xlsx>
+Der Datensatz gibt Aufschluss über die Verteilung der Krankenversicherungsarten in Deutschland. Das Verständnis der Versichertheit der Bevölkerung ist entscheidend für die Analyse des Zugangs zu Gesundheitsleistungen, des finanziellen Risikoschutzes und der Erschwinglichkeit.
+
+datensatz: die folgenden Werden benutzte, um die Streuung bzw. Die Verteilung der medizinischen Versorgungen und dessen Verfügbarkeit in den jeweiligen Bezirken zu visualisieren.
+
+apotheken:
+<https://opendata.muenchen.de/dataset/indikatorenatlas-gesundheit-apotheken-dichte>
+
+zahn: 
+<https://opendata.muenchen.de/dataset/indikatorenatlas-gesundheit-zahnaerztedichte-83r65mct>
+
+arzt:
+<https://opendata.muenchen.de/dataset/indikatorenatlas-gesundheit-aerztedichte-83r65mct>
+darunter fallen: Allgemeinmedizin, Frauenheilkunde und Geburtshilfe, Innere Medizin, Kinder- und Jugendmedizin, Orthopädie und Psychotherapeutische Medizin
+
+```{r data}
+data1 <- read_excel("data/krankenversicherte.xlsx")
+data2 <- read.csv("data/apotheken.csv")
+data3 <- read.csv("data/zahn.csv")
+data4 <- read.csv("data/arzt.csv")
+
+
+```
+### Numerische Zusammenfassung der individuellen Datensätze
+```{r}
+summary(data1)
+summary(data2)
+summary(data3)
+summary(data4)
+```
+### Kurze Analyse auf Ausreißern:
+
+1.Ein Ausreißer in Form einer extrem hohen oder niedrigen Dichte könnte auf ungewöhnliche Konzentrationen von Medizinische Versorgungen in bestimmten Stadtteilen hinweisen. Beispielsweise könnte ein Stadtteil eine signifikant höhere Dichte haben als der Durchschnitt, was auf eine übermäßige Verfügbarkeit von Medizinische Versorgungen hindeutet. Umgekehrt könnte ein Stadtteil eine sehr niedrige Dichte aufweisen, was möglicherweise auf eine Unterdeckung in der Gesundheitsversorgung hinweist.
+
+2.Ausreißer können auch in der absoluten Anzahl der Medizinische Versorgungen pro Stadtteil auftreten. Wenn ein Stadtteil eine ungewöhnlich hohe oder niedrige Anzahl davon im Vergleich zur Bevölkerungszahl hat, könnte dies die Dichte erheblich beeinflussen und auf spezifische Merkmale oder Bedürfnisse dieses Stadtteils hinweisen.
+
+
+
+```{r, echo=FALSE}
+selected_rows <- data1[c(30,44,45,46 ),c(1,4)] # selects the rows and columns
+selected_rows
+label <- selected_rows$`Krankenversicherungsschutz der Bevölkerung`
+#label
+value <- selected_rows$...4 #assigns the column (...4) to the value var.
+#value
+```
+
+```{r,echo=FALSE}
+fig <- plot_ly(selected_rows, labels = ~label, values = ~value, type = 'pie')
+fig <- fig %>% layout(title = 'Personen mit Angaben zum Versicherungsschutz im Jahr 2018 in Prozent')
+fig # to show the percentile distribution of the 2 majority KV types
+```
+Da es in Deutschland eine gesetzliche Krankenversicherungspflicht gilt, die eine nahezu vollständige Abdeckung von 99,7% aller registrierten Personen mit Krankenversicherung gewährleistet. Diese Daten zeigen, dass die Mehrheit, konkret 88,7%, sich für die gesetzliche Krankenversicherung (GKV) entscheidet, während 11% der Bevölkerung eine private Krankenversicherung (PKV) bevorzugen. Interessanterweise bleibt lediglich ein sehr kleiner Teil, nämlich 0,1% der Gesamtzahl der Personen, ohne jegliche Form von Krankenversicherungsschutz.
+
+
+## all installed packages
+```{r pachage,echo=FALSE}
+ip = as.data.frame(installed.packages()[,c(1,3:4)])
+ip = ip[is.na(ip$Priority),1:2,drop=FALSE]
+ip
+```
+## Zusammenfassung und Entwicklung bzw. Analyse der jeweilingen Datensätze:
+
+```{r apotheken 2022}
+apo <- data2 %>% filter(Raumbezug == "Stadt München")%>% select(Jahr,Indikatorwert,Basiswert.2)
+print(apo) # alle values wählen, die die insgesamt Anzahl an Apotheken in münchen anzeigt, für jedes Jahr
+```
+```{r apotheke diagram,echo=FALSE}
+apo_verlauf <- plot_ly(apo, x = ~Jahr) %>%
+  add_trace(y = ~Basiswert.2, name = "apotheken", type = 'scatter', mode = 'lines') %>%
+  layout(
+    title = "Anzahl der apotheken in München von 2006 bis 2022 Jahre",
+    xaxis = list(title = "Jahr",dtick = 1),
+    yaxis = list(title = "Anzahl", range = c(310,410)),
+    showlegend = TRUE,
+    plot_bgcolor = '#e5ecf6',
+    width = 800
+  )
+apo_verlauf
+```
+Die Daten zeigen einen durchschnittlichen jährlichen Rückgang von etwa 4.875 Apotheken pro Jahr, berechnet aus einem Rückgang von 78 Apotheken im 16-Jahres-Zeitraum von 2006 bis 2022. Trotz dieses allgemeinen Rückgangs gab es Phasen der Stabilität, wie von 2006 bis 2008, als die Zahl der Apotheken konstant bei 407 blieb, und von 2010 bis 2012, als die Zahl um 403 Apotheken schwankte. Diese stabilen Perioden stehen im Gegensatz zu dem allgemeinen Abwärtstrend, der über den breiteren Zeitraum beobachtet wurde. Es kann verschiedene Ursachen für den allgemeinen Rückgang der Anzahl der Apotheken geben, wie z. B. bestimmte wirtschaftliche Bedingungen, die sich auf die Lebensfähigkeit von Apotheken auswirken können und sowohl die Gründung neuer Apotheken als auch das Überleben bestehender Apotheken beeinträchtigen. Eine sinkende Zahl von Apotheken könnte sich auf den Zugang zu Medikamenten und Gesundheitsdiensten auswirken, insbesondere in unterversorgten Gemeinden.
+
+
+```{r}
+ins_arzt <- data4 %>% filter(Raumbezug == "Stadt München", Ausprägung== "insgesamt")%>% select(Jahr,Indikatorwert,Basiswert.2)
+print(ins_arzt) # alle values wählen, die die insgesamt Anzahl an Ärzten in münchen anzeigt, für jedes Jahr
+```
+
+
+```{r insgeasamte ärzte}
+arzt_verlauf <- plot_ly(ins_arzt, x = ~Jahr) %>%
+  add_trace(y = ~Basiswert.2, name = "Ärzte in München", type = 'scatter', mode = 'lines') %>%
+  layout(
+    title = "Anzahl der Ärzte in München von 2010 bis 2022 Jahre",
+    xaxis = list(title = "Jahr",dtick = 1),
+    yaxis = list(title = "Anzahl", range = c(3500,4100)), 
+    showlegend = TRUE,
+    plot_bgcolor = '#e5ecf6',
+    width = 800
+  )
+arzt_verlauf
+```
+Die Analyse des Datensatzes von 2010 bis 2022 zeigt einen positiven Trend bei der Zahl der Ärzte mit einem durchschnittlichen jährlichen Anstieg von etwa 35,42 Ärzten pro Jahr. Dieses Wachstum deutet auf eine Verbesserung der Zugänglichkeit der Gesundheitsversorgung hin und deutet auf eine allgemeine Erweiterung und Stärkung des Gesundheitssystems hin. Der stetige Anstieg der Zahl der Ärzte ist ein positives Zeichen für die öffentliche Gesundheit und weist auf bessere Gesundheitsdienste und Ergebnisse für die Bevölkerung hin.
+
+
+```{r}
+ins_zahn_arzt <- data3 %>% filter(Raumbezug == "Stadt München", Ausprägung== "insgesamt")%>% select(Jahr,Indikatorwert,Basiswert.2)
+print(ins_zahn_arzt)
+```
+
+```{r}
+zahn_arzt_verlauf <- plot_ly(ins_zahn_arzt, x = ~Jahr) %>%
+  add_trace(y = ~Basiswert.2, name = "Zahnärzte in München", type = 'scatter', mode = 'lines') %>%
+  layout(
+    title = "Anzahl der Zahnärzte in München von 2010 bis 2022 Jahre",
+    xaxis = list(title = "Jahr",dtick = 1),
+    yaxis = list(title = "Anzahl", range = c(1200,1800)), 
+    showlegend = TRUE,
+    plot_bgcolor = '#e5ecf6',
+    width = 800
+  )
+zahn_arzt_verlauf
+
+```
+Die Analyse des Datensatzes von 2006 bis 2022 zeigt einen positiven Trend bei der Zahl der Zahnärzte mit einem durchschnittlichen jährlichen Anstieg von etwa 34,25 Zahnärzten pro Jahr. Dieses Wachstum deutet auf eine Verbesserung des Zugangs zur zahnärztlichen Versorgung hin und deutet auf eine allgemeine Erweiterung und Stärkung des zahnärztlichen Gesundheitssystems hin. Der stetige Anstieg der Zahl der Zahnärzte ist ein positives Zeichen für die öffentliche Gesundheit und weist auf bessere Mundgesundheitsdienste und Ergebnisse für die Bevölkerung hin.
+
+
+```{r}
+
+# Teilmenge der Datenrahmen, die ab 2010 beginnen sollen
+ins_zahn_arzt_sub <- ins_zahn_arzt[ins_zahn_arzt$Jahr >= 2010, ]
+ins_arzt_sub <- ins_arzt[ins_arzt$Jahr >= 2010, ]
+apo_sub <- apo[apo$Jahr >= 2010, ]
+
+
+# Bestimmung der maximal benötigten Y-Achsenbereich
+max_y <- max(max(ins_zahn_arzt_sub$Basiswert.2), max(ins_arzt_sub$Basiswert.2),max(apo_sub$Basiswert.2))
+
+# hier eine Combi plot erstellen
+combined_plot <- plot_ly() %>%
+  
+ 
+  add_trace(data = ins_zahn_arzt_sub, x = ~Jahr, y = ~Basiswert.2,
+            name = "Zahnärzte in München", type = 'scatter', mode = 'lines') %>%
+  
+  
+  add_trace(data = ins_arzt_sub, x = ~Jahr, y = ~Basiswert.2,
+            name = "Ärzte in München", type = 'scatter', mode = 'lines') %>%
+  
+  
+  add_trace(data = apo_sub, x = ~Jahr, y = ~Basiswert.2,
+            name = "Apotheken in München", type = 'scatter', mode = 'lines') %>%
+  
+  # Layout configuration
+  layout(
+    title = "Entwicklung von Zahnärzten, Ärzten und Apotheken in München seit 2010",
+    xaxis = list(title = "Jahr", dtick = 1),
+    yaxis = list(title = "Anzahl", range = c(0, max_y + 100)), 
+    showlegend = TRUE,
+    plot_bgcolor = '#e5ecf6',
+    width = 800
+  )
+
+# Show the combi plot
+combined_plot
+```
+
+### Neue Dataframes für die Individuellen Bezirke in München um die Verbreitung der medizinischen Versorgungen darzustellen
+
+```{r}
+apo_2022 <- data2 %>% filter(Jahr == 2022,Raumbezug != "Stadt München")%>% select(Jahr, Raumbezug,Basiswert.2)
+print(apo_2022)
+```
+```{r}
+zahn_2022 <- data3 %>% filter(Jahr == 2022,Raumbezug != "Stadt München")%>% select(Jahr, Raumbezug,Basiswert.2)
+print(zahn_2022)
+```
+```{r}
+arzt_2022 <- data4 %>% filter(Ausprägung =="insgesamt", Jahr == 2022, Raumbezug != "Stadt München")%>% select(Jahr, Raumbezug,Basiswert.2)
+print(arzt_2022)
+```
+### Visualisierung der Verteilung der Versorgung, um die Verfügbarkeit in den Individuellen Bezirken Münchens zu zeigen
+
+```{r}
+combined_data <- rbind(
+  cbind(apo_2022, Type = "Apotheken"),
+  cbind(zahn_2022, Type = "Zahnärzte"),
+  cbind(arzt_2022, Type = "Insgesamte Ärzte")
+)
+
+combined_data$Raumbezug <- as.factor(1:25) # damit die bezirke von 1-25 numeriert sind
+
+
+ggplot(combined_data, aes(x = Raumbezug, y = Basiswert.2, fill = Type)) +
+  geom_bar(stat = "identity", position = position_dodge(width = 0.5), width = 0.5) +
+  scale_fill_manual(values = c("Apotheken" = "purple", "Zahnärzte" = "red", "Insgesamte Ärzte" = "green")) +
+  labs(title = "Anzahl der medizinischen Versorgungen in den jeweiligen Bezirken 
+                                  in München (2022)",
+       x = "Stadtbezirke in München",
+       y = "Anzahl") +
+  theme_minimal()
+
+```
+
+Variablen:
+Raumbezug (x-Achse):
+
+Diese Variable steht für "Stadtbezirke in München".
+Da Bezirke Namen oder Identifikatoren verschiedener Gebiete sind, ist Raumbezug eine kategoriale Variable.
+
+Basiswert.2 (y-Achse):
+
+Diese Variable stellt die "Anzahl" der medizinischen Versorgungen (wie Apotheken, Zahnärzte und Gesamtärzte) in jedem Bezirk dar.
+Da er die Anzahl darstellt, ist Basiswert.2 eine metrische (quantitative) Variable.
+
+```{r}
+find_min_value <- function(dataset) {
+  return(min(dataset$Basiswert.2))
+}
+
+find_max_value <- function(dataset) {
+  return(max(dataset$Basiswert.2))
+}
+
+
+print(find_min_value(apo_2022))
+print(find_max_value(apo_2022))
+
+print(find_min_value(arzt_2022))
+print(find_max_value(arzt_2022))
+
+print(find_min_value(zahn_2022))
+print(find_max_value(zahn_2022))
+
+```
+Allgemein Kann man von der Analyse feststellen, dass in jedem Bezirk vom München mindestens 6 Apotheken, 31 Ärzte und 15 Zahnärzte einen Hauptwohnsitz haben.
+
+Ist dann München gut ausgesattet, um die Gesundheitsbedürfnisse seiner Bewohner effektiv zu erfüllen? Ja, ist es.
+
+Da jede der 25 Regionen oder Bezirke Münchens mindestens 6 Apotheken, 31 Ärzte und 15 Zahnärzte hat, spiegelt dies ein hochentwickeltes und gerechtes Gesundheitssystem wider. Dies stellt sicher, dass alle Einwohner bequemen Zugang zu notwendiger medizinischer und zahnärztlicher Versorgung haben, trägt zur Gesundheit und zum Wohlbefinden der Gemeinschaft bei und unterstützt die wirtschaftliche und soziale Entwicklung innerhalb der Stadt. Obwohl die Mehrheit der Bürger in den Außenbezirken lebt und sich die meisten medizinischen Einrichtungen in der Innenstadt befinden, profitieren Sie in der Regel von einer hervorragenden Infrastruktur und einem hervorragenden Verkehrsnetz. Diese Erreichbarkeit erleichtert es Patienten aus dem Umland, zentral gelegene Ärzte zu erreichen.
+
+### Bonus: Visualisierung der Verteilung der Versorgung, um die Verfügbarkeit in den Individuellen Bezirken Münchens zu zeigen mit plotly paket
+
+```{r}
+plot_ly() %>% # mit plot_ly kann man die werte der jeweiligen Bezirke zu sehen
+  add_trace(data = apo_2022, x = ~Raumbezug, y = ~Basiswert.2, name = "Apotheken", 
+            type = "bar", marker = list(color = "purple")) %>%
+  add_trace(data = zahn_2022, x = ~Raumbezug, y = ~Basiswert.2, name = "Zahnärzte",
+            type = "bar", marker = list(color = "red")) %>%
+  add_trace(data = arzt_2022, x = ~Raumbezug, y = ~Basiswert.2, name = "Insgesamte Ärzte",
+            type = "bar", marker = list(color = "green")) %>%
+  layout(title = "Anzahl der medizinischen Versorgungen in den jeweiligen Bezirken in München (2022)",
+         xaxis = list(title = "Stadtbezirke in München"),
+         yaxis = list(title = "Anzahl"),
+         bargap = 0.5)  # Adjust the gap between bars
+
+sessionInfo()
+```
